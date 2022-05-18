@@ -15,26 +15,47 @@ export function TaskList() {
   const [newTaskTitle, setNewTaskTitle] = useState('');
 
   function handleCreateNewTask() {
-    // Crie uma nova task com um id random, não permita criar caso o título seja vazio.
+    // Create a new task with random ID, not allowing an empty title.
+    // Check if newTaskTitle is empty or filled with blank spaces
+    let emptyTaskTitle: Boolean = newTaskTitle.replace(/\s/g,"") == "";
+    if (!emptyTaskTitle) {
+      let newTask: Task = {
+        id: Math.random()*100,
+        title: newTaskTitle,
+        isComplete: false,
+      }
+      setTasks([...tasks, newTask]);
+      // Clear NewTaskTitle state
+      setNewTaskTitle('');
+    } 
   }
 
   function handleToggleTaskCompletion(id: number) {
-    // Altere entre `true` ou `false` o campo `isComplete` de uma task com dado ID
+    // Switch the field 'isComplete' between 'true' or 'false', using a task ID
+    let taskIndex = tasks.findIndex(task => task.id === id);
+    console.log(tasks[taskIndex]);
+    let updatedTasks = [...tasks];
+    updatedTasks[taskIndex].isComplete = !updatedTasks[taskIndex].isComplete;
+    setTasks(updatedTasks);
   }
 
   function handleRemoveTask(id: number) {
-    // Remova uma task da listagem pelo ID
+    // Remove a task from the state array using its ID
+    let taskIndex = tasks.findIndex(task => task.id === id);
+    let updatedTasks = [...tasks];
+    updatedTasks.splice(taskIndex, 1);
+    setTasks(updatedTasks);
   }
 
   return (
     <section className="task-list container">
       <header>
-        <h2>Minhas tasks</h2>
+        <h2>My tasks</h2>
 
         <div className="input-group">
           <input 
             type="text" 
-            placeholder="Adicionar novo todo" 
+            placeholder="Add new task" 
             onChange={(e) => setNewTaskTitle(e.target.value)}
             value={newTaskTitle}
           />
